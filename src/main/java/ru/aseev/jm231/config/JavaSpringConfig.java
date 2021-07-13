@@ -1,5 +1,6 @@
-package jm.security.example.config;
+package ru.aseev.jm231.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,16 +13,16 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 @Configuration
+@ComponentScan("ru.aseev.jm231")
 @EnableWebMvc
-@ComponentScan("jm.security.example")
-public class WebConfig implements WebMvcConfigurer {
+public class JavaSpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
-    public WebConfig(ApplicationContext applicationContext) {
+    @Autowired
+    public JavaSpringConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
-
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
@@ -40,7 +41,6 @@ public class WebConfig implements WebMvcConfigurer {
         return templateEngine;
     }
 
-
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
@@ -48,3 +48,4 @@ public class WebConfig implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 }
+

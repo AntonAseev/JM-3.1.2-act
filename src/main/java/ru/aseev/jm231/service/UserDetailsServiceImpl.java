@@ -1,6 +1,6 @@
-package jm.security.example.service;
+package ru.aseev.jm231.service;
 
-import jm.security.example.dao.UserDao;
+import ru.aseev.jm231.dao.UserDao;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     //  приведен к классу UserDetails.
     // Для создания UserDetails используется интерфейс UserDetailsService, с единственным методом:
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userDao.getUserByName(s);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userDao.getUserByName(username);
     }
 }

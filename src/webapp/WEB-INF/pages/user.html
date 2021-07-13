@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Hello user</title>
+    <title>User</title>
 </head>
 <body>
-<div>
-    <p>Hello User, this Spring Security example</p>
-</div>
+
+<p th:text="${user.getName() + ', ' + user.getAge()} + ' years old.'"></p>
+<p th:text="'Email: ' + ${user.getEmail()}">VALUE</p>
+<br/>
+<form  method="post" th:action="@{/logout}">
+    <button type="submit">Logout</button>
+</form>
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-package jm.security.example.security;
+package ru.aseev.jm231.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,8 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // http.csrf().disable(); - попробуйте выяснить сами, что это даёт
         http.authorizeRequests()
-                .antMatchers("/").permitAll() // доступность всем
-                .antMatchers("/user").access("hasAnyRole('ROLE_USER')") // разрешаем входить на /user пользователям с ролью User
+                .antMatchers("/user/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')") // разрешаем входить на /user пользователям с ролью User
+                .antMatchers("/admin/**", "/").access("hasAnyRole('ROLE_ADMIN')")
+//                .and().logout().logoutSuccessUrl("/login")
                 .and().formLogin()  // Spring сам подставит свою логин форму
                 .successHandler(successUserHandler); // подключаем наш SuccessHandler для перенеправления по ролям
     }
