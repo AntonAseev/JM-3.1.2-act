@@ -1,43 +1,41 @@
 package ru.aseev.jm231.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.aseev.jm231.model.Role;
 import ru.aseev.jm231.model.User;
-import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-@Repository
-public class UserDaoImpl implements UserDao {
+@Service
+public class UserDaoImpl {
 
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private UserDao userDao;
+
     @Transactional
-    @Override
     public User getUserByName(String name) {
-            User user = em.createQuery("SELECT u FROM User u WHERE u.name = :name", User.class)
+            return em.createQuery("SELECT u FROM User u WHERE u.name = :name", User.class)
                     .setParameter("name", name).getSingleResult();
-            return user;
     }
 
     @Transactional
     public User uniqueMyUser(long id) {
-        return em.find(User.class, id);
+        return userDao.getById(id);
     }
 
     @Transactional
     public void saveNewUser(User user){
-        em.persist(em.merge(user));
+        userDao.save(user);
     }
 
     @Transactional
     public List<User> allMyUsers() {
-        return em.createQuery("SELECT e FROM User e", User.class).getResultList();
+        return userDao.findAll();
     }
 
     @Transactional
@@ -52,7 +50,7 @@ public class UserDaoImpl implements UserDao {
 
     @Transactional
     public void dropUser(long id){
-        em.remove(uniqueMyUser(id));
+        userDao.deleteById(id);
     }
 }
 

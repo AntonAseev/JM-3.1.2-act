@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.aseev.jm231.dao.UserDao;
+import ru.aseev.jm231.dao.UserDaoImpl;
 
 import java.security.Principal;
 
@@ -13,16 +13,16 @@ import java.security.Principal;
 @RequestMapping("/user")
 public class UserController {
 
-    final UserDao userDao;
+    private final UserDaoImpl userDaoImpl;
 
     @Autowired
-    UserController(UserDao userDao) {
-        this.userDao = userDao;
+    public UserController(UserDaoImpl userDaoImpl) {
+        this.userDaoImpl = userDaoImpl;
     }
 
     @GetMapping()
     public String getUserPage(Principal principal, Model model) {
-        model.addAttribute("user", userDao.getUserByName(principal.getName()));
+        model.addAttribute("user", userDaoImpl.getUserByName(principal.getName()));
         return "user";
     }
 }
