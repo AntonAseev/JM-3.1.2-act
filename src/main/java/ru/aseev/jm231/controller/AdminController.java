@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.aseev.jm231.dao.UserDaoImpl;
 import ru.aseev.jm231.model.Role;
 import ru.aseev.jm231.model.User;
+import ru.aseev.jm231.service.UserDetailsServiceImpl;
+
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,16 +17,20 @@ import java.util.Set;
 @RequestMapping("/admin")
 public class AdminController {
 
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final UserDaoImpl userDaoImpl;
 
     @Autowired
-    public AdminController(UserDaoImpl userDaoIml) {
+    public AdminController(UserDaoImpl userDaoIml, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userDaoImpl = userDaoIml;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @GetMapping()
-    public String allUsers(Model model) {
-        model.addAttribute("users", userDaoImpl.allMyUsers());
+    public String allUsers(Principal principal, Model model) {
+        model.addAttribute("user", userDetailsServiceImpl.loadUserByUsername(principal.getName()));
+        Iterable<User> users = userDaoImpl.allMyUsers();
+        model.addAttribute("users", users);
         return "allUsers";
     }
 
