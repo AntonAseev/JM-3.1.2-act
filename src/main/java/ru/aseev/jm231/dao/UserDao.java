@@ -5,4 +5,5 @@ import ru.aseev.jm231.model.User;
 
 
 public interface UserDao extends JpaRepository<User, Long> {
+    User findByName(String name);
 }

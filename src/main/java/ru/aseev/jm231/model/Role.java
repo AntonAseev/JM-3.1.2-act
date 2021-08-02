@@ -9,7 +9,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "roles")
+@Table(name = "roless")
 public class Role implements GrantedAuthority {
     @Id
     private Long id;
@@ -17,7 +17,7 @@ public class Role implements GrantedAuthority {
     private String role;
 
     @Transient
-    @ManyToMany( mappedBy = "roles")
+    @ManyToMany( mappedBy = "roless")
     private Set<User> users;
 
     public Role() {

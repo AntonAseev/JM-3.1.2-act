@@ -2,14 +2,11 @@ package ru.aseev.jm231.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import ru.aseev.jm231.dao.UserDaoImpl;
 import ru.aseev.jm231.model.Role;
 import ru.aseev.jm231.model.User;
-import ru.aseev.jm231.service.UserDetailsServiceImpl;
-
-import java.security.Principal;
+import ru.aseev.jm231.service.UserService;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,32 +14,17 @@ import java.util.Set;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
-    private final UserDaoImpl userDaoImpl;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(UserDaoImpl userDaoIml, UserDetailsServiceImpl userDetailsServiceImpl) {
-        this.userDaoImpl = userDaoIml;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    public AdminController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping()
-    public String allUsers(Principal principal, Model model) {
-        model.addAttribute("user", userDetailsServiceImpl.loadUserByUsername(principal.getName()));
-        Iterable<User> users = userDaoImpl.allMyUsers();
-        model.addAttribute("users", users);
+    public String allUsers(ModelMap model) {
+        model.addAttribute("user", userService.allMyUsers());
         return "allUsers";
-    }
-
-    @GetMapping("/{id}")
-    public String getUniqueUser(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userDaoImpl.uniqueMyUser(id));
-        return "userForAdmin";
-    }
-
-    @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "new";
     }
 
     @PostMapping
@@ -52,26 +34,24 @@ public class AdminController {
             Set<Role> roles = new HashSet<>();
             roles.add(newRole);
             user.setRoles(roles);
-            userDaoImpl.saveNewUser(user);
+            userService.saveNewUser(user);
             return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editUser(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userDaoImpl.uniqueMyUser(id));
-        return "edit";
-    }
-
-    @PatchMapping("/{id}")
+    @PatchMapping
     public String updateUser(@ModelAttribute("user") User user,
-                             @PathVariable("id") long id) {
-            userDaoImpl.changeUser(id, user);
-            return "redirect:/admin";
+                             @ModelAttribute("role") String role) {
+        Role newRole = new Role(role.equals("ADMIN") ? 1L : 2L, "ROLE" + role);
+        Set<Role> roles = new HashSet<>();
+        roles.add(newRole);
+        user.setRoles(roles);
+        userService.saveNewUser(user);
+        return "redirect:/admin";
     }
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") long id) {
-        userDaoImpl.dropUser(id);
+        userService.dropUser(id);
         return "redirect:/admin";
     }
 }

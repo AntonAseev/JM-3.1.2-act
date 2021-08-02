@@ -8,7 +8,7 @@ import java.util.*;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "userss")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
