@@ -11,7 +11,7 @@ public interface UserService extends UserDetailsService {
 
     List<User> allMyUsers();
     User uniqueMyUser(long id);
-    User getUserByName(String name);
+    User findUserByName(String name);
     void saveNewUser(User user);
     void dropUser(long id);
 
